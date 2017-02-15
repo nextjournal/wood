@@ -8,6 +8,7 @@ RUN apk add --no-cache bash gawk sed grep bc coreutils curl gcc g++ git coreutil
   R -q -e "install.packages(c('devtools'), repo='https://cran.rstudio.com/')" &&\
   R -q -e "install.packages(c('base64enc'), repo='https://cran.rstudio.com/')" &&\
   R -q -e "install.packages(c('rjson'), repo='https://cran.rstudio.com/')" &&\
+  R -q -e "install.packages(c('plotly'), repo='https://cran.rstudio.com/')" &&\
   rm -rf git2r /tmp/*
 
 RUN echo "options(repos=structure(c(CRAN=\"https://cran.rstudio.com\")))" > ~/.Rprofile
