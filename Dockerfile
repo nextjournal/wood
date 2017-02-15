@@ -1,7 +1,7 @@
 FROM alpine:3.5
 
 RUN apk update \
-  && apk add bash gawk sed grep bc coreutils git ca-certificates make curl gcc musl-dev \
+  && apk add bash gawk sed grep bc coreutils git ca-certificates make curl gcc musl-dev gfortran \
   && rm -fr /var/cache/apk/*
 
 RUN apk update \
