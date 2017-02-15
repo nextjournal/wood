@@ -1,16 +1,13 @@
 FROM alpine:3.5
 
-RUN apk update \
-  && apk add bash gawk sed grep bc coreutils git ca-certificates make curl gcc g++ musl-dev gfortran \
-  && rm -fr /var/cache/apk/*
+RUN apk add --no-cache bash gawk sed grep bc coreutils curl gcc g++ git coreutils make gfortran R \
+                       R-dev libressl-dev curl-dev libxml2-dev ca-certificates &&\
+  R -q -e "install.packages('Rcpp', repo='https://cran.rstudio.com')" &&\
+  git clone https://github.com/ropensci/git2r.git &&\
+  R CMD INSTALL --configure-args="--with-libssl-include=/usr/lib/" git2r &&\
+  R -q -e "install.packages(c('devtools'), repo='https://cran.rstudio.com/')" &&\
+  rm -rf git2r /tmp/*
 
-RUN apk update \
-  && curl --silent \
-    --location https://github.com/sgerrand/alpine-pkg-R/releases/download/3.3.1-r0/R-3.3.1-r0.apk --output /var/cache/apk/R-3.3.1-r0.apk \
-    --location https://github.com/sgerrand/alpine-pkg-R/releases/download/3.3.1-r0/R-dev-3.3.1-r0.apk --output /var/cache/apk/R-dev-3.3.1-r0.apk \
-    --location https://github.com/sgerrand/alpine-pkg-R/releases/download/3.3.1-r0/R-doc-3.3.1-r0.apk --output /var/cache/apk/R-doc-3.3.1-r0.apk \
-  && apk add --allow-untrusted \
-    /var/cache/apk/R-3.3.1-r0.apk \
-    /var/cache/apk/R-dev-3.3.1-r0.apk \
-    /var/cache/apk/R-doc-3.3.1-r0.apk \
-  && rm -fr /var/cache/apk/*
+RUN echo "options(repos=structure(c(CRAN=\"https://cran.rstudio.com\")))" > ~/.Rprofile
+ADD dependencies.R dependencies.R
+RUN Rscript dependencies.R
